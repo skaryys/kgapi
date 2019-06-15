@@ -12,6 +12,10 @@ app.listen(port, () => {
     console.log("Server running on port 3000");
 });
 
+app.get("/",() => {
+    res.json({});
+});
+
 app.get("/nodes", (req, res, next) => {
     let searchstring = req.param("q");
     let url = 'https://www.google.com/search?q='+searchstring;
