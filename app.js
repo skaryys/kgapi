@@ -6,7 +6,9 @@ const axios = require("axios");
 const app = express();
 const device = devices["Pixel 2 XL"];
 
-app.listen(3000, () => {
+var port = process.env.PORT || 8080;
+
+app.listen(port, () => {
     console.log("Server running on port 3000");
 });
 
