@@ -9,7 +9,7 @@ const device = devices["Pixel 2 XL"];
 const server = app.listen(3000, () => {
     console.log("Server running on port 3000");
 });
-server.timeout = 100000;
+server.timeout = 0;
 
 app.get("/nodes", (req, res, next) => {
     let searchstring = req.param("q");
