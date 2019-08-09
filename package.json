@@ -1,18 +1,18 @@
 {
-  "name": "kiziapi",
-  "version": "1.0.0",
-  "description": "KIZI API Google Knowledge Graph",
-  "main": "app.js",
-  "author": "Martin Škára",
-  "license": "MIT",
-  "dependencies": {
-    "express": "^4.16.4",
-    "request-promise": "^4.2.4",
-    "request": "^2.88.0",
-    "puppeteer": "^1.16.0",
-    "axios": "^0.18.0"
+  "devDependencies": {
+    "@symfony/webpack-encore": "^0.24.0",
+    "browser-sync": "^2.26.5",
+    "browser-sync-webpack-plugin": "^2.2.2",
+    "axios": "^0.18.0",
+    "mime": "^2.4.2",
+    "babel-loader": "^8.0.5",
+    "babel-preset-env": "^7.0.0-beta.3",
+    "file-system": "^2.2.2",
+    "vis": "^4.21.0"
   },
-  "scripts": {
-    "start": "node app.js"
+  "dependencies": {
+    "fs": "^0.0.1-security",
+    "net": "^1.0.2",
+    "tls": "^0.0.1"
   }
 }

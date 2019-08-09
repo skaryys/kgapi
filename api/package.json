@@ -1,0 +1,19 @@
+{
+  "name": "kiziapi",
+  "version": "1.0.0",
+  "description": "KIZI API Google Knowledge Graph",
+  "main": "app.js",
+  "author": "Martin Škára",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.16.4",
+    "request-promise": "^4.2.4",
+    "request": "^2.88.0",
+    "puppeteer": "^1.16.0",
+    "axios": "^0.18.0",
+    "cors": "^2.8.5"
+  },
+  "scripts": {
+    "start": "node app.js"
+  }
+}
