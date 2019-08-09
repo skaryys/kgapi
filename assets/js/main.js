@@ -34,7 +34,15 @@ document.querySelector("form").addEventListener("submit", function(e) {
             axios.get("http://localhost:4000/nodes?q="+query, {
             }).then(function (response) {
                 Array.prototype.forEach.call(response.data.nodes, function(el, i) {
-                    nodes.push(el);
+                    let notpush = false;
+                    for (let i = 0; i < nodes.length; i++) {
+                        if (nodes[i].id === el.id) {
+                            notpush = true;
+                        }
+                    }
+                    if (notpush === false) {
+                        nodes.push(el);
+                    }
                 });
 
                 setTimeout(function(){
