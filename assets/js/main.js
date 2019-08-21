@@ -5,10 +5,15 @@ document.querySelector("form").addEventListener("submit", function(e) {
     e.preventDefault();
     let firstItem = document.querySelector("#start").value;
 
-    window.nodes = [];
-    window.edges = [];
+    if (!window.nodes) {
+        window.nodes = [];
+    }
+    if (!window.edges) {
+        window.edges = [];
+    }
     window.options = {
-        interaction:{hover:true}
+        interaction:{hover:true},
+        manipulation:{enabled:true}
     };
 
     let querys = [];
@@ -29,7 +34,15 @@ document.querySelector("form").addEventListener("submit", function(e) {
                 label: item.name,
                 title:  JSON.stringify(item, null, 4)
             };
-            nodes.push(graphitem);
+            let notpush = false;
+            for (let i = 0; i < nodes.length; i++) {
+                if (nodes[i].id === graphitem.id) {
+                    notpush = true;
+                }
+            }
+            if (notpush === false) {
+                nodes.push(graphitem);
+            }
 
             axios.get("http://localhost:4000/nodes?q="+query, {
             }).then(function (response) {
@@ -43,6 +56,12 @@ document.querySelector("form").addEventListener("submit", function(e) {
                     if (notpush === false) {
                         nodes.push(el);
                     }
+                    let edgeitem = {
+                        from: graphitem["id"],
+                        to: el["id"],
+                        label: response.data.relations[i]
+                    };
+                    edges.push(edgeitem);
                 });
 
                 setTimeout(function(){
