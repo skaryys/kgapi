@@ -16,7 +16,7 @@ app.use(cors());
 app.get("/nodes", (req, res, next) => {
     req.setTimeout(500000);
     let searchstring = req.param("q");
-    let url = 'https://www.google.com/search?q='+searchstring;
+    let url = 'https://www.google.cz/search?q='+searchstring;
 
     (async () => {
         try {
@@ -30,15 +30,15 @@ app.get("/nodes", (req, res, next) => {
                     for (const link of array) {
                         let browser_processArray = await puppeteer.launch({headless: true, defaultViewport: null});
                         let page_processArray = await browser_processArray.newPage();
-                        await page_processArray.goto("https://google.com" + link[0], {waitUntil: 'load', timeout: 0});
+                        await page_processArray.goto("https://google.cz" + link[0], {waitUntil: 'load', timeout: 0});
                         if (await page.$(".knowledge-panel") !== null) {
-                            let kgid = await page_processArray.evaluate(() => Array.from(document.querySelectorAll(".kno-ftr [data-async-context]"), element => element.getAttribute("data-async-context")));
+                            let kgid = await page_processArray.evaluate(() => Array.from(document.querySelectorAll("kno-share-button g-dialog a"), element => element.getAttribute("href")));
                             let i = 0;
                             for (const first of kgid) {
                                 if (i === 0) {
-                                    let regex = /(?<=card_id:)(.*)(?=;entry_point)/;
+                                    let regex = /(mid%3D)(.+?)(%26)/;
                                     let match_first = regex.exec(first);
-                                    let match_id = match_first[1].toString().replace("%2F", "/");
+                                    let match_id = match_first[2].toString().replace("%2F", "/");
                                     let match_id2 = match_id.replace("%2F", "/");
                                     console.log(match_id2);
                                     await axios.get('https://kgsearch.googleapis.com/v1/entities:search', {
@@ -69,6 +69,7 @@ app.get("/nodes", (req, res, next) => {
                                 }
                             }
                         }
+                        await browser_processArray.close();
                     }
                 }
 
