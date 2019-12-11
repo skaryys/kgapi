@@ -26,6 +26,7 @@ app.get("/nodes", (req, res, next) => {
             await page.goto(url, {waitUntil: 'load', timeout: 0});
             if (await page.$(".knowledge-panel") !== null) {
                 let kpp = await page.evaluate(() => Array.from(document.querySelectorAll('.knowledge-panel .kno-fv a[data-ved]'), element => [element.getAttribute("href"), element.closest("[data-attrid]").getAttribute("data-attrid")]));
+
                 async function processArray(array) {
                     for (const link of array) {
                         let browser_processArray = await puppeteer.launch({headless: true, defaultViewport: null});
@@ -68,13 +69,52 @@ app.get("/nodes", (req, res, next) => {
                                     i++;
                                 }
                             }
+                            if (kgid.length < 1) {
+                                let kgid2 = await page_processArray.evaluate(() => Array.from(document.querySelectorAll(".knowledge-panel a.bia"), element => element.getAttribute("href")));
+                                let y = 0;
+                                for (const first of kgid2) {
+                                    if (y === 0) {
+                                        console.log(first);
+                                        let regex = /(%252C)(%252F.+?)(&)/;
+                                        let match_first = regex.exec(first);
+                                        let match_id = match_first[2].toString().replace("%252F", "/");
+                                        let match_id2 = match_id.replace("%252F", "/");
+                                        console.log(match_id2);
+                                        await axios.get('https://kgsearch.googleapis.com/v1/entities:search', {
+                                            params: {
+                                                'ids': match_id2,
+                                                'limit': 1,
+                                                'indent': true,
+                                                "key": "AIzaSyA94kim18rne3X5gzh7Gpl8Gt4SXz5yzuc",
+                                                "languages": "cs"
+                                            }
+                                        }).then(function (response) {
+                                            if (typeof response.data.itemListElement[0] !== 'undefined' && response.data.itemListElement[0]) {
+                                                let item = response.data.itemListElement[0].result;
+                                                if (item.name !== 'undefined' && item.name) {
+                                                    let graphitem = {
+                                                        id: item["@id"],
+                                                        label: item.name,
+                                                        title: JSON.stringify(item, null, 4)
+                                                    };
+                                                    results["nodes"].push(graphitem);
+                                                    results["relations"].push(link[1]);
+                                                }
+                                            }
+                                        }).catch(function (error) {
+                                            console.log(error);
+                                        });
+                                        y++;
+                                    }
+                                }
+                            }
                         }
                         await browser_processArray.close();
                     }
                 }
 
                 await processArray(kpp);
-                let kpp_2 = await page.evaluate(() => Array.from(document.querySelectorAll('.knowledge-panel .kno-fb-ctx[data-rentity^="/"]'), element => [element.getAttribute("data-rentity"), element.closest("[data-attrid]").getAttribute("data-attrid")]));
+                let kpp_2 = await page.evaluate(() => Array.from(document.querySelectorAll('.knowledge-panel [data-rentity^="/"]'), element => [element.getAttribute("data-rentity"), element.closest("[data-attrid]").getAttribute("data-attrid")]));
 
                 async function processArray2(array) {
                     for (const link of array) {
@@ -107,7 +147,7 @@ app.get("/nodes", (req, res, next) => {
                 }
 
                 await processArray2(kpp_2);
-                let kpp_3 = await page.evaluate(() => Array.from(document.querySelectorAll('.knowledge-panel .kno-fb-ctx[data-rentity=""] > a'), element => [element.getAttribute("href"), element.closest("[data-attrid]").getAttribute("data-attrid")]));
+                let kpp_3 = await page.evaluate(() => Array.from(document.querySelectorAll('.knowledge-panel [data-rentity=""] > a'), element => [element.getAttribute("href"), element.closest("[data-attrid]").getAttribute("data-attrid")]));
                 await processArray(kpp_3);
                 await browser.close();
             }

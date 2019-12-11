@@ -25,7 +25,8 @@ document.querySelector("form").addEventListener("submit", function(e) {
                 'query': query,
                 'limit': 1,
                 'indent': true,
-                "key": "AIzaSyA94kim18rne3X5gzh7Gpl8Gt4SXz5yzuc"
+                "key": "AIzaSyA94kim18rne3X5gzh7Gpl8Gt4SXz5yzuc",
+                "languages": "cs"
             }
         }).then(function (response) {
             let item = response.data.itemListElement[0].result;
